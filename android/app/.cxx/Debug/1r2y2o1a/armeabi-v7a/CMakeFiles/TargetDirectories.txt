@@ -1,0 +1,2 @@
+C:/Users/ADMIN/AndroidStudioProjects/dh-varad-main/android/app/.cxx/Debug/1r2y2o1a/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/ADMIN/AndroidStudioProjects/dh-varad-main/android/app/.cxx/Debug/1r2y2o1a/armeabi-v7a/CMakeFiles/rebuild_cache.dir
