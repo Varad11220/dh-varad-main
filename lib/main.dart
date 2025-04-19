@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:intl/intl.dart';
 import 'VillaBooking/homescreen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -107,22 +109,37 @@ Future<void> setupFCM() async {
   String? token = await messaging.getToken();
   print('FCM Token: $token');
 
-  //Send only Token
-  final url = Uri.parse('https://notify-p8xg.onrender.com/register-token');
-  final tkn = {'token': token};
-  try {
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode(tkn),
-    );
-    if (response.statusCode == 200) {
-      print('Token sent successfully!');
-    } else {
-      print('Failed to send Token: ${response.body}');
+  // Store token in Firebase Realtime Database
+  if (token != null) {
+    try {
+      final DatabaseReference database = FirebaseDatabase.instance.ref();
+      final tokensRef = database.child('admin_tokens');
+
+      // Get existing tokens to check for duplicates and determine next token number
+      final DataSnapshot snapshot = await tokensRef.get();
+      int tokenCount = 0;
+      bool tokenExists = false;
+
+      if (snapshot.exists && snapshot.value is Map) {
+        Map<dynamic, dynamic> tokensMap = snapshot.value as Map;
+        tokenCount = tokensMap.length;
+
+        // Check if token already exists
+        tokenExists = tokensMap.values.contains(token);
+      }
+
+      // Only add token if it doesn't already exist
+      if (!tokenExists) {
+        // Add token with sequential numbering
+        final tokenRef = tokensRef.child('token${tokenCount + 1}');
+        await tokenRef.set(token);
+        print('Token stored successfully in Firebase database!');
+      } else {
+        print('Token already exists in database, not adding duplicate.');
+      }
+    } catch (e) {
+      print('Error storing token in Firebase: $e');
     }
-  } catch (e) {
-    print('Error: $e');
   }
 
   // Foreground handler

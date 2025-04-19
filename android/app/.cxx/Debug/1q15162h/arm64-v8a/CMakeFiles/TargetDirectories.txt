@@ -1,0 +1,2 @@
+C:/Users/varad/OneDrive/Documents/it/projects/dh-varad-main/android/app/.cxx/Debug/1q15162h/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/varad/OneDrive/Documents/it/projects/dh-varad-main/android/app/.cxx/Debug/1q15162h/arm64-v8a/CMakeFiles/rebuild_cache.dir
